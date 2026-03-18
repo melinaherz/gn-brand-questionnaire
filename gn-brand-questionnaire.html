@@ -895,6 +895,7 @@
         document.getElementById('saveStatus').textContent = '✓ Saved to Vich Vision';
         document.getElementById('saveStatus').style.color = '#34C759';
         document.getElementById('downloadBtn').style.display = 'none';
+        localStorage.removeItem(STORAGE_KEY);
       } else { throw new Error('Save failed'); }
     } catch (e) {
       document.getElementById('saveStatus').textContent = 'Could not save automatically — please download instead.';
