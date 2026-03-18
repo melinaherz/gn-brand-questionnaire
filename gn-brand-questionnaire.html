@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>That Money Guy — Brand & Content Questionnaire</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: #fafafa;
+    color: #424245;
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: #fff;
+    border-bottom: 1px solid #e5e5e7;
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .topbar-left .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #86868b; margin-bottom: 2px; }
+  .topbar-left .title   { font-size: 15px; font-weight: 700; color: #1d1d1f; }
+  .topbar-right { display: flex; align-items: center; gap: 14px; }
+  .section-counter { font-size: 12px; color: #86868b; font-weight: 500; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { height: 3px; background: #e5e5e7; }
+  .progress-bar  { height: 3px; background: #007AFF; transition: width 0.4s ease; }
+
+  /* ── SECTION PILLS ── */
+  .section-pills {
+    display: flex;
+    gap: 8px;
+    padding: 20px 40px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .section-pills::-webkit-scrollbar { display: none; }
+  .pill {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+    border: 1px solid #e5e5e7;
+    background: #fff;
+    color: #86868b;
+    white-space: nowrap;
+  }
+  .pill.active { background: #007AFF; color: #fff; border-color: #007AFF; }
+  .pill.done   { background: rgba(52,199,89,0.1); color: #248A3D; border-color: rgba(52,199,89,0.3); }
+
+  /* ── MAIN CONTENT ── */
+  .main { padding: 32px 40px 80px; max-width: 760px; margin: 0 auto; }
+
+  /* ── SECTION ── */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header { margin-bottom: 28px; }
+  .section-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #86868b;
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1d1d1f;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    font-size: 14px;
+    color: #86868b;
+    line-height: 1.6;
+  }
+
+  /* ── QUESTION ── */
+  .question { margin-bottom: 28px; }
+  .q-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin-bottom: 4px;
+    line-height: 1.45;
+  }
+  .q-hint {
+    font-size: 12px;
+    color: #86868b;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #e5e5e7;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #1d1d1f;
+    resize: vertical;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    line-height: 1.6;
+    -webkit-appearance: none;
+  }
+  textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #007AFF;
+    box-shadow: 0 0 0 3px rgba(0,122,255,0.12);
+  }
+  textarea { min-height: 90px; }
+  textarea.tall { min-height: 130px; }
+
+  .char-hint {
+    text-align: right;
+    font-size: 11px;
+    color: #c7c7cc;
+    margin-top: 4px;
+  }
+
+  /* Multi-input (e.g. 3 separate boxes) */
+  .multi-input { display: flex; flex-direction: column; gap: 8px; }
+  .multi-input input[type="text"] { background: #fff; }
+
+  /* Divider */
+  .q-divider { height: 1px; background: #f2f2f7; margin: 32px 0; }
+
+  /* ── NAV BUTTONS ── */
+  .nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid #f2f2f7;
+  }
+  .btn {
+    padding: 11px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    border: none;
+    font-family: inherit;
+  }
+  .btn-back { background: #f2f2f7; color: #424245; }
+  .btn-back:hover { background: #e5e5e7; }
+  .btn-next { background: #007AFF; color: #fff; }
+  .btn-next:hover { background: #0066CC; }
+  .btn-submit { background: #34C759; color: #fff; }
+  .btn-submit:hover { background: #248A3D; }
+
+  /* ── SUCCESS SCREEN ── */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 40px;
+    max-width: 580px;
+    margin: 0 auto;
+  }
+  .success-screen.show { display: block; }
+  .success-icon { font-size: 56px; margin-bottom: 20px; }
+  .success-title { font-size: 26px; font-weight: 700; color: #1d1d1f; margin-bottom: 10px; }
+  .success-sub { font-size: 15px; color: #86868b; line-height: 1.65; margin-bottom: 32px; }
+  .success-steps {
+    background: #fff;
+    border: 1px solid #e5e5e7;
+    border-radius: 14px;
+    padding: 24px;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+  .success-steps .step-title { font-size: 13px; font-weight: 700; color: #1d1d1f; margin-bottom: 14px; }
+  .success-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f7;
+    font-size: 13px;
+    color: #424245;
+    line-height: 1.5;
+  }
+  .success-step:last-child { border-bottom: none; }
+  .step-num-circle {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #007AFF;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1d1d1f;
+    color: #fff;
+    padding: 13px 28px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background 0.18s;
+    margin-right: 10px;
+  }
+  .btn-download:hover { background: #3a3a3c; }
+  .btn-view-notion {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(175,82,222,0.1);
+    color: #8234BE;
+    padding: 13px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid rgba(175,82,222,0.25);
+    font-family: inherit;
+    text-decoration: none;
+    transition: all 0.18s;
+  }
+  .btn-view-notion:hover { background: rgba(175,82,222,0.15); }
+
+  /* ── INTRO SCREEN ── */
+  .intro-screen { max-width: 620px; margin: 60px auto 0; text-align: center; padding: 0 40px; }
+  .intro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,122,255,0.08);
+    border: 1px solid rgba(0,122,255,0.2);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #007AFF;
+    margin-bottom: 20px;
+  }
+  .intro-title { font-size: 30px; font-weight: 700; color: #1d1d1f; margin-bottom: 12px; line-height: 1.2; }
+  .intro-sub { font-size: 15px; color: #86868b; line-height: 1.7; margin-bottom: 32px; }
+  .intro-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 32px;
+    text-align: left;
+  }
+  .intro-section-item {
+    background: #fff;
+    border: 1px solid #e5e5e7;
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #424245;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .intro-section-item .s-num {
+    font-size: 10px;
+    font-weight: 700;
+    color: #86868b;
+    background: #f5f5f7;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .btn-start {
+    background: #007AFF;
+    color: #fff;
+    padding: 14px 36px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background 0.18s;
+  }
+  .btn-start:hover { background: #0066CC; }
+  .intro-time { font-size: 12px; color: #c7c7cc; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar" id="topbar" style="display:none">
+  <div class="topbar-left">
+    <div class="eyebrow">That Money Guy · Vich Vision</div>
+    <div class="title">Brand & Content Questionnaire</div>
+  </div>
+  <div class="topbar-right">
+    <span class="section-counter" id="sectionCounter">Section 1 of 8</span>
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrap" id="progressWrap" style="display:none">
+  <div class="progress-bar" id="progressBar" style="width:12.5%"></div>
+</div>
+
+<!-- SECTION PILLS -->
+<div class="section-pills" id="sectionPills" style="display:none">
+  <div class="pill active" onclick="goToSection(0)">① Your Story</div>
+  <div class="pill" onclick="goToSection(1)">② Your Voice</div>
+  <div class="pill" onclick="goToSection(2)">③ Your Opinions</div>
+  <div class="pill" onclick="goToSection(3)">④ Your Audience</div>
+  <div class="pill" onclick="goToSection(4)">⑤ Red Lines</div>
+  <div class="pill" onclick="goToSection(5)">⑥ Personality</div>
+  <div class="pill" onclick="goToSection(6)">⑦ What Good Looks Like</div>
+  <div class="pill" onclick="goToSection(7)">⑧ Where You're Going</div>
+</div>
+
+<!-- ══════════════════════════════════
+     INTRO SCREEN
+══════════════════════════════════ -->
+<div class="intro-screen" id="introScreen">
+  <div class="intro-badge">🎙️ For Gabriel · Confidential</div>
+  <div class="intro-title">Tell me who you really are</div>
+  <div class="intro-sub">
+    This isn't a brand questionnaire. It's the raw material that lets me write, plan, and create in your voice — not a generic version of a personal finance creator. The more honest and specific you are, the better everything I build for you will sound like you.
+  </div>
+  <div class="intro-sections">
+    <div class="intro-section-item"><div class="s-num">1</div> Your Story</div>
+    <div class="intro-section-item"><div class="s-num">2</div> Your Voice & Language</div>
+    <div class="intro-section-item"><div class="s-num">3</div> Your Opinions</div>
+    <div class="intro-section-item"><div class="s-num">4</div> Your Audience</div>
+    <div class="intro-section-item"><div class="s-num">5</div> Red Lines</div>
+    <div class="intro-section-item"><div class="s-num">6</div> Personality & Humour</div>
+    <div class="intro-section-item"><div class="s-num">7</div> What Good Looks Like</div>
+    <div class="intro-section-item"><div class="s-num">8</div> Where You're Going</div>
+  </div>
+  <button class="btn-start" onclick="startForm()">Let's go →</button>
+  <div class="intro-time">Takes about 20–30 minutes · Save and continue anytime</div>
+</div>
+
+<!-- ══════════════════════════════════
+     FORM SECTIONS
+══════════════════════════════════ -->
+<div class="main" id="formMain" style="display:none">
+
+  <!-- SECTION 1: Your Story -->
+  <div class="section active" id="section-0">
+    <div class="section-header">
+      <div class="section-num">Section 01 of 08</div>
+      <div class="section-title">Your Story — In Your Own Words</div>
+      <div class="section-desc">Not the press bio. The real version — what actually happened, what you didn't know, what changed. This is what makes the content feel like a person wrote it.</div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Before you became "That Money Guy" — what was your actual relationship with money like? Growing up, at university, early career.</div>
+      <div class="q-hint">Not what you wish you'd done. What you actually did. Were you good with money? Bad? Completely clueless?</div>
+      <textarea class="tall" id="q_story_1" placeholder="Be honest. The messier the better — this is what makes you relatable."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What's the money mistake you're most embarrassed about?</div>
+      <div class="q-hint">The kind you'd tell a close friend over dinner, not necessarily something you'd lead a video with.</div>
+      <textarea id="q_story_2" placeholder="e.g. a bad investment, ignoring my pension for years, lifestyle inflation I didn't notice..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">When did you have the moment that made you think "I need to teach this stuff"? What actually happened?</div>
+      <div class="q-hint">As specific as you can — what was the conversation, the moment, the realisation?</div>
+      <textarea id="q_story_3" placeholder="Tell me the story..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What did you know nothing about financially when you left Barclays?</div>
+      <div class="q-hint">Things you had to figure out yourself after leaving a "real job" — the gaps that surprised you.</div>
+      <textarea id="q_story_4" placeholder="e.g. self-employed taxes, pension continuation, managing irregular income..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Complete this sentence in your own words:</div>
+      <div class="q-hint">"I used to think ______ about money. Now I know ______."</div>
+      <textarea id="q_story_5" placeholder="Write it out naturally — doesn't have to be one sentence."></textarea>
+    </div>
+
+    <div class="nav-bar">
+      <div></div>
+      <button class="btn btn-next" onclick="nextSection()">Next: Your Voice →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Your Voice -->
+  <div class="section" id="section-1">
+    <div class="section-header">
+      <div class="section-num">Section 02 of 08</div>
+      <div class="section-title">Your Voice — Specific Language</div>
+      <div class="section-desc">Voice is the single most important thing to get right. Generic is the enemy. I need your actual words, your actual phrases, the things that are distinctly you.</div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Write 3 phrases or sentences you actually say all the time in your videos.</div>
+      <div class="q-hint">Transitions, intros, sign-offs, ways you explain things — things that are distinctly Gabriel.</div>
+      <div class="multi-input">
+        <input type="text" id="q_voice_1a" placeholder="Phrase 1 — something you always say">
+        <input type="text" id="q_voice_1b" placeholder="Phrase 2">
+        <input type="text" id="q_voice_1c" placeholder="Phrase 3">
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Write 3 phrases or words you'd NEVER use — things that make you cringe in other finance content.</div>
+      <div class="q-hint">Jargon, buzzwords, phrases that feel fake, corporate, or condescending.</div>
+      <div class="multi-input">
+        <input type="text" id="q_voice_2a" placeholder="Word or phrase you'd never say">
+        <input type="text" id="q_voice_2b" placeholder="">
+        <input type="text" id="q_voice_2c" placeholder="">
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Finish this in your own voice: "Here's what most people get completely wrong about ISAs..."</div>
+      <div class="q-hint">Write it as if you're speaking to camera. Show me how you'd actually explain it.</div>
+      <textarea class="tall" id="q_voice_3" placeholder="Just talk it through naturally..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Rewrite this sentence in your voice:</div>
+      <div class="q-hint" style="background:#f9f9f9;border:1px solid #e5e5e7;border-radius:8px;padding:10px 12px;font-style:italic;color:#1d1d1f;">"It is advisable to consider diversifying your investment portfolio across multiple asset classes to mitigate risk."</div>
+      <textarea id="q_voice_4" placeholder="How would you actually say this to someone?"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Give me a piece of financial advice that sounds smart but is actually bad or misleading. Then give me your debunk.</div>
+      <div class="q-hint">Something you hear all the time that you disagree with.</div>
+      <textarea class="tall" id="q_voice_5" placeholder="The advice: ...\n\nWhy it's wrong or incomplete: ..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">How do you feel about using humour in finance content? What's your instinct on where the line is?</div>
+      <textarea id="q_voice_6" placeholder="When does humour work? When does it undermine you?"></textarea>
+    </div>
+
+    <div class="nav-bar">
+      <button class="btn btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn btn-next" onclick="nextSection()">Next: Your Opinions →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Opinions -->
+  <div class="section" id="section-2">
+    <div class="section-header">
+      <div class="section-num">Section 03 of 08</div>
+      <div class="section-title">Your Opinions — The Unfiltered Takes</div>
+      <div class="section-desc">This is what makes your content sound like YOU and not a Wikipedia article. I need to know what you actually think — not the "balanced" answer, the Gabriel answer.</div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Property vs. renting — what do you actually think?</div>
+      <div class="q-hint">This is one of the most debated topics in UK personal finance. Where do you genuinely land?</div>
+      <textarea id="q_op_1" placeholder="Your honest take, including any nuances or caveats that are important to you..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Crypto — where do you genuinely stand?</div>
+      <div class="q-hint">Fan, sceptic, somewhere in the middle? What's your actual position and why?</div>
+      <textarea id="q_op_2" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Index funds vs. picking individual stocks for someone just starting out?</div>
+      <textarea id="q_op_3" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">The FIRE movement (Financial Independence, Retire Early) — fan or sceptic?</div>
+      <textarea id="q_op_4" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">One financial "rule" or piece of advice that everyone repeats — and you think is overrated or oversimplified.</div>
+      <div class="q-hint">e.g. "always max your ISA", "6 months emergency fund", "pay off all debt before investing"</div>
+      <textarea id="q_op_5" placeholder="The rule, and why you think it's not quite right..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">One financial topic almost nobody talks about that you think is genuinely important.</div>
+      <textarea id="q_op_6" placeholder="Something that doesn't get enough attention in your world..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What's your take on the "loud luxury" / lifestyle inflation culture you see on social media?</div>
+      <textarea id="q_op_7" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Any other strong opinions in personal finance you want me to know? Things where you have a clear view that shapes how you create content?</div>
+      <textarea class="tall" id="q_op_8" placeholder="Anything goes here..."></textarea>
+    </div>
+
+    <div class="nav-bar">
+      <button class="btn btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn btn-next" onclick="nextSection()">Next: Your Audience →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Your Audience -->
+  <div class="section" id="section-3">
+    <div class="section-header">
+      <div class="section-num">Section 04 of 08</div>
+      <div class="section-title">Your Audience — What You Actually Know</div>
+      <div class="section-desc">Not demographics. The real stuff — what you know about them from thousands of comments, DMs, and conversations.</div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What's the single most common misconception you see in your comments?</div>
+      <div class="q-hint">The thing that makes you think "I need to make another video about this because people still don't get it."</div>
+      <textarea id="q_aud_1" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What question do people ask you most that you find surprisingly hard to answer well?</div>
+      <textarea id="q_aud_2" placeholder="The question that's harder to answer than it looks..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What does your comments section or DMs look like after a really good video? What are people actually saying?</div>
+      <div class="q-hint">Give me specific types of comments or DMs — not just "positive feedback".</div>
+      <textarea class="tall" id="q_aud_3" placeholder="e.g. 'I always get people saying...' or 'Someone once sent me a DM saying...'"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What content do you make that you KNOW is right for your audience but consistently gets low views?</div>
+      <textarea id="q_aud_4" placeholder="The stuff you believe in but the algorithm doesn't reward..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Describe your ideal audience member as if they were a specific person you actually know or have met.</div>
+      <div class="q-hint">Name them if you want. What's their job, their situation, what are they worried about, what do they want?</div>
+      <textarea class="tall" id="q_aud_5" placeholder="e.g. 'She's 27, works in marketing in London, earns about £38k...'"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Is there anything your audience consistently gets wrong about you — a misperception you want to correct?</div>
+      <textarea id="q_aud_6" placeholder=""></textarea>
+    </div>
+
+    <div class="nav-bar">
+      <button class="btn btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn btn-next" onclick="nextSection()">Next: Red Lines →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 5: Red Lines -->
+  <div class="section" id="section-4">
+    <div class="section-header">
+      <div class="section-num">Section 05 of 08</div>
+      <div class="section-title">Content Rules & Red Lines</div>
+      <div class="section-desc">What you won't do is just as important as what you will. This protects your voice and your audience — and makes sure I never accidentally suggest something that crosses a line for you.</div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">A topic in personal finance you won't cover — and why.</div>
+      <div class="q-hint">Could be anything — a type of product, a type of content, a specific debate you won't touch.</div>
+      <textarea id="q_rl_1" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">A brand or product category you'd turn down regardless of the money.</div>
+      <textarea id="q_rl_2" placeholder="e.g. certain financial products, certain types of brands, anything that conflicts with your values..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Have you ever been asked to say or do something in a brand deal or collaboration that you refused? What was it?</div>
+      <div class="q-hint">As specific as you're comfortable being — this helps me understand your instincts.</div>
+      <textarea id="q_rl_3" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">A content format or style you genuinely dislike making — even if it performs well.</div>
+      <textarea id="q_rl_4" placeholder="e.g. a specific type of video, a posting style, a tone..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">How do you think about the line between "educating your audience about a product" and "promoting something that might not be in their best interest"?</div>
+      <div class="q-hint">This is important for me to understand when I write branded content or CTAs.</div>
+      <textarea class="tall" id="q_rl_5" placeholder="Walk me through how you think about this..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Are there any topics where you deliberately stay neutral — where you have a personal view but choose not to share it publicly?</div>
+      <textarea id="q_rl_6" placeholder=""></textarea>
+    </div>
+
+    <div class="nav-bar">
+      <button class="btn btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn btn-next" onclick="nextSection()">Next: Personality →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 6: Personality -->
+  <div class="section" id="section-5">
+    <div class="section-header">
+      <div class="section-num">Section 06 of 08</div>
+      <div class="section-title">Personality & Humour</div>
+      <div class="section-desc">The stuff between the educational content that makes people actually like you — not just learn from you.</div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Tell me a specific joke, line, or moment from your content that you were particularly proud of or that landed really well.</div>
+      <textarea id="q_per_1" placeholder="What was it, and why do you think it worked?"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What's a specific analogy, comparison, or metaphor you use regularly to explain financial concepts?</div>
+      <div class="q-hint">The thing you always go back to because it works every time.</div>
+      <textarea id="q_per_2" placeholder="e.g. 'I always compare compound interest to...'"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">How would your best friend describe the way you explain money stuff — at a dinner party, not on camera?</div>
+      <textarea id="q_per_3" placeholder="Ask them if you want. What would they actually say?"></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What's something about you personally — not finance-related — that your most loyal audience members would know?</div>
+      <div class="q-hint">The stuff that makes you a person, not just a finance guy.</div>
+      <textarea id="q_per_4" placeholder="Interests, obsessions, things you talk about in passing, stories you've told..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What type of humour do you actually find funny? (Give examples — creators, shows, comedians, specific things.)</div>
+      <textarea id="q_per_5" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What do you find annoying or cringeworthy in other creators' personalities — things you make a conscious effort not to do?</div>
+      <textarea id="q_per_6" placeholder=""></textarea>
+    </div>
+
+    <div class="nav-bar">
+      <button class="btn btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn btn-next" onclick="nextSection()">Next: What Good Looks Like →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 7: What Good Looks Like -->
+  <div class="section" id="section-6">
+    <div class="section-header">
+      <div class="section-num">Section 07 of 08</div>
+      <div class="section-title">What Good Looks Like</div>
+      <div class="section-desc">Your standard. The content you're proud of is the benchmark I use to calibrate everything else.</div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Name 3 pieces of your own content you're most proud of. For each: what was it, and why does it work?</div>
+      <div class="q-hint">Could be videos, posts, newsletter issues, anything. Links help if you have them.</div>
+      <div class="multi-input">
+        <textarea id="q_good_1a" placeholder="Piece 1 — what it was and why it works for you"></textarea>
+        <textarea id="q_good_1b" placeholder="Piece 2"></textarea>
+        <textarea id="q_good_1c" placeholder="Piece 3"></textarea>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Name a piece of content you made that you thought was great but that flopped. Why do you think it didn't land?</div>
+      <textarea id="q_good_2" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Describe the best comment or DM you've ever received from a viewer. What did it say?</div>
+      <div class="q-hint">The one that made you think "this is exactly why I do this."</div>
+      <textarea id="q_good_3" placeholder="Copy and paste it if you can find it."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Who outside your niche makes content you genuinely admire — on any platform, any topic? What do you admire about it?</div>
+      <div class="q-hint">Creators who make you think "I want to be this good at what they do."</div>
+      <textarea id="q_good_4" placeholder="Names + what specifically you admire about their content or style..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">If you had to describe your content at its absolute best in one sentence, what would you say?</div>
+      <textarea id="q_good_5" placeholder="Not marketing copy. How would you actually describe it?"></textarea>
+    </div>
+
+    <div class="nav-bar">
+      <button class="btn btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn btn-next" onclick="nextSection()">Next: Where You're Going →</button>
+    </div>
+  </div>
+
+  <!-- SECTION 8: Where You're Going -->
+  <div class="section" id="section-7">
+    <div class="section-header">
+      <div class="section-num">Section 08 of 08</div>
+      <div class="section-title">Where You're Going</div>
+      <div class="section-desc">The last section. This shapes the long-term direction — what I build towards, not just what exists now.</div>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What topics do you want to start covering that you haven't touched yet — or haven't gone deep enough on?</div>
+      <textarea id="q_future_1" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What content would you make if the algorithm didn't exist? No views, no performance pressure — just what you'd want to say.</div>
+      <textarea class="tall" id="q_future_2" placeholder="Your honest answer here is really valuable."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">In 3 years, what do you want "That Money Guy" to mean to people?</div>
+      <div class="q-hint">Not follower counts. What do you want them to think or feel when they hear your name?</div>
+      <textarea id="q_future_3" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">What do you want people to actually do differently in their financial lives because of your content?</div>
+      <div class="q-hint">The real-world outcomes you're working towards.</div>
+      <textarea id="q_future_4" placeholder=""></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Tell me about the book. What is it, who's it for, what do you want it to do?</div>
+      <textarea id="q_future_5" placeholder="The vision for the book — what it's about and what it means to you..."></textarea>
+    </div>
+
+    <div class="question">
+      <div class="q-label">Anything else you want your AI head of content to know — about you, your brand, or what you're building?</div>
+      <div class="q-hint">Anything that didn't come up in the other sections. The things you'd want a new team member to understand about working with you.</div>
+      <textarea class="tall" id="q_future_6" placeholder="Open floor."></textarea>
+    </div>
+
+    <div class="nav-bar">
+      <button class="btn btn-back" onclick="prevSection()">← Back</button>
+      <button class="btn btn-submit" onclick="submitForm()">Submit & Save Responses ✓</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ══════════════════════════════════
+     SUCCESS SCREEN
+══════════════════════════════════ -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">🎉</div>
+  <div class="success-title">Done. Thank you, Gabriel.</div>
+  <div class="success-sub">Your responses have been saved. Download the file below and drop it into your shared Cowork folder — Pinka will take it from there and get everything into Notion.</div>
+
+  <div class="success-steps">
+    <div class="step-title">Next steps</div>
+    <div class="success-step">
+      <div class="step-num-circle">1</div>
+      <div>Hit "Download Responses" — it'll save a file called <strong>gn-brand-questionnaire-responses.json</strong></div>
+    </div>
+    <div class="success-step">
+      <div class="step-num-circle">2</div>
+      <div>Drop it into the <strong>Gabriel Nussbaum</strong> folder in your shared workspace</div>
+    </div>
+    <div class="success-step">
+      <div class="step-num-circle">3</div>
+      <div>Tell Pinka — she'll format everything and save it to your Notion page automatically</div>
+    </div>
+  </div>
+
+  <div>
+    <button class="btn-download" id="downloadBtn" onclick="downloadResponses()">⬇ Download Responses</button>
+    <a class="btn-view-notion" href="https://www.notion.so/325dd14e2cea81869316de3a39995862" target="_blank">View Notion Page ↗</a>
+  </div>
+</div>
+
+<script>
+  const SECTIONS = 8;
+  let current = 0;
+  const STORAGE_KEY = 'gn-questionnaire-v1';
+
+  // ── START ──
+  function startForm() {
+    document.getElementById('introScreen').style.display = 'none';
+    document.getElementById('formMain').style.display = 'block';
+    document.getElementById('topbar').style.display = 'flex';
+    document.getElementById('progressWrap').style.display = 'block';
+    document.getElementById('sectionPills').style.display = 'flex';
+    loadSavedAnswers();
+    updateUI();
+  }
+
+  // ── NAVIGATION ──
+  function goToSection(idx) {
+    document.getElementById('section-' + current).classList.remove('active');
+    current = idx;
+    document.getElementById('section-' + current).classList.add('active');
+    updateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    saveAnswers();
+  }
+
+  function nextSection() {
+    saveAnswers();
+    if (current < SECTIONS - 1) goToSection(current + 1);
+  }
+
+  function prevSection() {
+    saveAnswers();
+    if (current > 0) goToSection(current - 1);
+  }
+
+  // ── UI UPDATE ──
+  function updateUI() {
+    const pct = ((current + 1) / SECTIONS) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('sectionCounter').textContent = 'Section ' + (current + 1) + ' of ' + SECTIONS;
+
+    const pills = document.querySelectorAll('.pill');
+    pills.forEach((p, i) => {
+      p.classList.remove('active', 'done');
+      if (i === current) p.classList.add('active');
+      else if (i < current) p.classList.add('done');
+    });
+  }
+
+  // ── SAVE / LOAD ──
+  function getAllAnswers() {
+    const fields = document.querySelectorAll('textarea, input[type="text"]');
+    const data = { submittedAt: new Date().toISOString(), answers: {} };
+    fields.forEach(f => { if (f.id) data.answers[f.id] = f.value; });
+    return data;
+  }
+
+  function saveAnswers() {
+    const data = getAllAnswers();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function loadSavedAnswers() {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const data = JSON.parse(raw);
+      if (!data.answers) return;
+      Object.entries(data.answers).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = val;
+      });
+    } catch(e) {}
+  }
+
+  // ── SUBMIT ──
+  function submitForm() {
+    saveAnswers();
+    document.getElementById('formMain').style.display = 'none';
+    document.getElementById('topbar').style.display = 'none';
+    document.getElementById('progressWrap').style.display = 'none';
+    document.getElementById('sectionPills').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── DOWNLOAD ──
+  function downloadResponses() {
+    const data = getAllAnswers();
+
+    // Build a human-readable version too
+    const readable = formatReadable(data.answers);
+    data.readable = readable;
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'gn-brand-questionnaire-responses.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function formatReadable(answers) {
+    const sections = [
+      { title: '1. YOUR STORY', keys: ['q_story_1','q_story_2','q_story_3','q_story_4','q_story_5'], labels: ['Relationship with money before That Money Guy','Most embarrassing money mistake','The moment you knew you had to teach this','What you didn\'t know when you left Barclays','I used to think... now I know...'] },
+      { title: '2. YOUR VOICE', keys: ['q_voice_1a','q_voice_1b','q_voice_1c','q_voice_2a','q_voice_2b','q_voice_2c','q_voice_3','q_voice_4','q_voice_5','q_voice_6'], labels: ['Phrase you always say (1)','Phrase you always say (2)','Phrase you always say (3)','Word/phrase you\'d never use (1)','Word/phrase you\'d never use (2)','Word/phrase you\'d never use (3)','What most people get wrong about ISAs (in your voice)','Rewrite the corporate sentence','Bad advice + your debunk','Humour in finance content — your view'] },
+      { title: '3. YOUR OPINIONS', keys: ['q_op_1','q_op_2','q_op_3','q_op_4','q_op_5','q_op_6','q_op_7','q_op_8'], labels: ['Property vs. renting','Crypto','Index funds vs. stock picking','FIRE movement','Overrated financial rule','Underrated financial topic','Lifestyle inflation / loud luxury culture','Other strong opinions'] },
+      { title: '4. YOUR AUDIENCE', keys: ['q_aud_1','q_aud_2','q_aud_3','q_aud_4','q_aud_5','q_aud_6'], labels: ['Most common misconception in comments','Hardest question to answer well','What DMs/comments look like after a great video','Content you believe in but gets low views','Ideal audience member as a specific person','Misperception about you you want to correct'] },
+      { title: '5. RED LINES', keys: ['q_rl_1','q_rl_2','q_rl_3','q_rl_4','q_rl_5','q_rl_6'], labels: ['Topic you won\'t cover','Brand/product category you\'d turn down','Something you\'ve refused in a collab','Format you dislike making','Your line between education and promotion','Topics where you stay neutral'] },
+      { title: '6. PERSONALITY & HUMOUR', keys: ['q_per_1','q_per_2','q_per_3','q_per_4','q_per_5','q_per_6'], labels: ['Joke or moment you were proud of','Analogy you always use','How your best friend describes you explaining money','Something personal your loyal audience knows','Humour you actually find funny','Things in other creators you consciously avoid'] },
+      { title: '7. WHAT GOOD LOOKS LIKE', keys: ['q_good_1a','q_good_1b','q_good_1c','q_good_2','q_good_3','q_good_4','q_good_5'], labels: ['Best piece of your content (1)','Best piece (2)','Best piece (3)','Piece you thought was great but flopped','Best comment or DM ever received','Creator outside your niche you admire','Your content at its absolute best in one sentence'] },
+      { title: '8. WHERE YOU\'RE GOING', keys: ['q_future_1','q_future_2','q_future_3','q_future_4','q_future_5','q_future_6'], labels: ['Topics you want to cover next','Content you\'d make if the algorithm didn\'t exist','What "That Money Guy" means in 3 years','What you want people to do differently','The book — vision and purpose','Anything else for your AI head of content'] }
+    ];
+
+    let out = 'GABRIEL NUSSBAUM — BRAND & CONTENT QUESTIONNAIRE\n';
+    out += 'Submitted: ' + new Date().toLocaleString() + '\n';
+    out += '='.repeat(60) + '\n\n';
+
+    sections.forEach(sec => {
+      out += sec.title + '\n' + '-'.repeat(40) + '\n\n';
+      sec.keys.forEach((key, i) => {
+        const val = answers[key] || '(not answered)';
+        out += sec.labels[i] + ':\n' + val + '\n\n';
+      });
+      out += '\n';
+    });
+
+    return out;
+  }
+
+  // ── AUTO-SAVE ON INPUT ──
+  document.addEventListener('input', () => saveAnswers());
+</script>
+
+</body>
+</html>
