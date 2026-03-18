@@ -179,7 +179,8 @@
   .success-screen.show { display: block; }
   .success-icon { font-size: 56px; margin-bottom: 20px; }
   .success-title { font-size: 26px; font-weight: 700; color: #1d1d1f; margin-bottom: 10px; }
-  .success-sub { font-size: 15px; color: #86868b; line-height: 1.65; margin-bottom: 32px; }
+  .success-sub { font-size: 15px; color: #86868b; line-height: 1.65; margin-bottom: 16px; }
+  #saveStatus { display: block; font-size: 14px; font-weight: 500; margin-bottom: 24px; min-height: 20px; }
   .success-steps {
     background: #fff;
     border: 1px solid #e5e5e7;
@@ -766,26 +767,28 @@
 <div class="success-screen" id="successScreen">
   <div class="success-icon">🎉</div>
   <div class="success-title">Done. Thank you, Gabriel.</div>
-  <div class="success-sub">Your responses have been saved. Download the file below and drop it into your shared Cowork folder — Pinka will take it from there and get everything into Notion.</div>
+  <div class="success-sub">Your responses have been saved directly to Vich Vision — Melina will take it from here and get everything into Notion.</div>
+
+  <span id="saveStatus"></span>
 
   <div class="success-steps">
-    <div class="step-title">Next steps</div>
+    <div class="step-title">What happens next</div>
     <div class="success-step">
       <div class="step-num-circle">1</div>
-      <div>Hit "Download Responses" — it'll save a file called <strong>gn-brand-questionnaire-responses.json</strong></div>
+      <div>Melina reviews your answers and builds out your <strong>Brand Guidelines</strong> in Notion</div>
     </div>
     <div class="success-step">
       <div class="step-num-circle">2</div>
-      <div>Drop it into the <strong>Gabriel Nussbaum</strong> folder in your shared workspace</div>
+      <div>You'll get a message when your Notion page is ready to review</div>
     </div>
     <div class="success-step">
       <div class="step-num-circle">3</div>
-      <div>Tell Pinka — she'll format everything and save it to your Notion page automatically</div>
+      <div>From there, everything flows into your content system automatically</div>
     </div>
   </div>
 
   <div>
-    <button class="btn-download" id="downloadBtn" onclick="downloadResponses()">⬇ Download Responses</button>
+    <button class="btn-download" id="downloadBtn" style="display:none" onclick="downloadResponses()">⬇ Download Responses</button>
     <a class="btn-view-notion" href="https://www.notion.so/325dd14e2cea81869316de3a39995862" target="_blank">View Notion Page ↗</a>
   </div>
 </div>
