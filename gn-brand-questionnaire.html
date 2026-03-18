@@ -869,9 +869,38 @@
     } catch(e) {}
   }
 
+  // ── SUPABASE CONFIG ──
+  const SUPABASE_URL = 'https://gxardildbglpvxpyugfg.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd4YXJkaWxkYmdscHZ4cHl1Z2ZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzgxOTMsImV4cCI6MjA4OTM1NDE5M30.FghBwdvXczv2rB8gKCPRWDbIU7IvBlMmph0bYJMyieo';
+
   // ── SUBMIT ──
-  function submitForm() {
+  async function submitForm() {
     saveAnswers();
+    const data = getAllAnswers();
+    const readable = formatReadable(data.answers);
+    const submitBtn = document.querySelector('.btn-submit');
+    if (submitBtn) { submitBtn.textContent = 'Saving…'; submitBtn.disabled = true; }
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/questionnaire_responses', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ answers: data.answers, readable_text: readable })
+      });
+      if (res.ok) {
+        document.getElementById('saveStatus').textContent = '✓ Saved to Vich Vision';
+        document.getElementById('saveStatus').style.color = '#34C759';
+        document.getElementById('downloadBtn').style.display = 'none';
+      } else { throw new Error('Save failed'); }
+    } catch (e) {
+      document.getElementById('saveStatus').textContent = 'Could not save automatically — please download instead.';
+      document.getElementById('saveStatus').style.color = '#FF3B30';
+      document.getElementById('downloadBtn').style.display = 'inline-flex';
+    }
     document.getElementById('formMain').style.display = 'none';
     document.getElementById('topbar').style.display = 'none';
     document.getElementById('progressWrap').style.display = 'none';
@@ -880,7 +909,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ── DOWNLOAD ──
+    // ── DOWNLOAD ──
   function downloadResponses() {
     const data = getAllAnswers();
 
